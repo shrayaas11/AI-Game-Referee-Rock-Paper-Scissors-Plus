@@ -1,121 +1,99 @@
 AI Game Referee – Rock–Paper–Scissors–Plus
 Overview
 
-This project implements a minimal AI referee chatbot for a Rock–Paper–Scissors–Plus game using Google ADK. The bot enforces game rules, tracks state across turns, validates inputs, and automatically ends the game after three rounds.
-
-The game runs in a simple CLI conversational loop, as permitted by the assignment constraints.
+This project implements a minimal AI referee chatbot for a Rock–Paper–Scissors–Plus game using Google ADK. The bot enforces game rules, validates user input, maintains game state across turns, and automatically ends the game after three rounds. The interaction is implemented as a CLI-based conversational loop.
 
 Game Rules
 
-Best of 3 rounds
+The game is best of three rounds
 
-Valid moves:
+Valid moves are: rock, paper, scissors, and bomb
 
-rock
+Bomb can be used only once per player
 
-paper
+Bomb beats all other moves
 
-scissors
-
-bomb (can be used once per player)
-
-bomb beats all other moves
-
-bomb vs bomb results in a draw
+Bomb versus bomb results in a draw
 
 Invalid input wastes the round
 
-The game ends automatically after 3 rounds
+The game ends automatically after three rounds
 
 State Model
 
-The game state is stored in an in-memory Python dictionary to ensure persistence across turns without using external storage.
+The game state is maintained using an in-memory Python dictionary. This allows the system to persist information across turns without using external storage or databases.
 
-The state tracks:
+The state includes:
 
 Current round number
 
-Maximum number of rounds (3)
+Maximum rounds (3)
 
 User score and bot score
 
-Bomb usage flags for both user and bot
+Bomb usage flags for both players
 
 Game-over flag
 
-This ensures that state does not live in the prompt, satisfying the technical constraints.
+This ensures that state does not live inside the prompt and remains deterministic.
 
 Agent and Tool Design
 
-A single Google ADK Agent is used as the orchestration boundary.
+A single Google ADK Agent is used as the orchestration boundary. Explicit tool functions are attached to the agent to handle validation, game logic, and state mutation.
 
-Explicit Tools
+Tools used:
 
-The following functions are registered as explicit tools on the agent:
+validate_move: Validates the player’s move and enforces bomb usage rules
 
-validate_move
-Validates player input and enforces the one-time bomb usage rule.
+resolve_round: Determines the winner of each round based on game rules
 
-resolve_round
-Applies game logic and determines the winner of each round.
+update_game_state: Updates scores, round count, bomb usage, and game completion
 
-update_game_state
-Updates persistent state including round count, bomb usage, and game termination.
-
-This design clearly separates:
-
-Intent understanding (what move the user attempted)
-
-Game logic (who won the round)
-
-State mutation (updating scores and rounds)
+This cleanly separates intent understanding, game logic, and state management.
 
 Architecture Notes
 
-Google ADK is used for agent definition and tool registration.
-
-Tools are implemented as plain Python callables to remain compatible with ADK version differences.
-
-The CLI loop simulates conversational turns without relying on UI frameworks or servers.
-
-This approach prioritizes correctness, clarity, and determinism over UI polish.
+Google ADK is used for agent definition and tool registration. Tools are implemented as plain Python functions to remain compatible with ADK version differences. The CLI loop simulates conversational turns without using UI frameworks or long-running servers.
 
 Tradeoffs
 
-Bot move selection is random rather than strategic to keep the logic minimal.
+Bot moves are randomly selected instead of strategically optimized
 
-A single agent is used instead of multiple agents for simplicity.
+A single agent is used instead of multiple agents to keep the design minimal
 
-CLI-based interaction is used instead of a chat UI, as allowed by the assignment.
+CLI-based interaction is used instead of a chat UI, as permitted by the assignment
 
 Future Improvements
 
-With more time, the following enhancements could be made:
+With additional time, the system could be enhanced by:
 
-Strategic bot decision-making
+Adding strategic bot behavior
 
-Natural language input handling
+Supporting more flexible natural language inputs
 
-Unit tests for game logic and tools
+Writing unit tests for tools and game logic
 
-A fully agent-driven conversational loop
+Refactoring into a fully agent-driven conversational loop
 
 How to Run
+
+Install dependencies and run the file:
+
 pip install google-adk
 python rps_plus_referee.py
 
 Output
 
-The program provides:
+For each round, the program displays:
 
 Round number
 
-Moves played by the user and the bot
+User move and bot move
 
 Round winner
 
-Final result: User wins, Bot wins, or Draw
+At the end of the game, the final result is shown as User wins, Bot wins, or Draw.
 
 Conclusion
 
-This submission satisfies all functional, logical, and technical requirements outlined in the assignment and demonstrates clear state management, explicit tool usage, and conversational agent design.
+This project satisfies all functional, logical, and technical requirements of the assignment and demonstrates clear state management, explicit tool usage, and conversational agent design.
